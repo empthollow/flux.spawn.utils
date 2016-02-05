@@ -1,0 +1,8 @@
+#!/bin/bash
+enter=
+echo "Make sure your browser is closed before continuing (press enter to continue)"
+read enter
+sudo pacman -Sy flashplugin
+echo "Done [Press Enter]"
+read
+

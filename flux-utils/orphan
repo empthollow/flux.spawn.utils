@@ -1,0 +1,9 @@
+#!/bin/bash
+
+orphans=$(pacman -Qtdq)
+
+if [ -n "$orphans" ]; then
+sudo pacman -Rs $orphans
+else
+echo "There are no orphans to remove"
+fi
