@@ -1,0 +1,47 @@
+#!/bin/bash
+
+
+command=$1
+action=$(shift; echo $1)
+
+usage()
+{
+echo ""
+echo "daemon [service_name] [action]"
+echo "or"
+echo "daemon [command]"
+echo ""
+echo "Commands:"
+echo "list	- list available services -- usable daemons appear green"
+echo "version	- show version number"
+echo "help	- show this syntax"
+echo ""
+echo "Actions will vary by daemon. Typically as follows:"
+echo "start	- start daemon"
+echo "stop	- stop daemon"
+echo "restart	- restart daemon"
+echo ""
+
+}
+
+version()
+{
+echo "Version 2.0 - systemd"
+}
+
+checkcmd()
+{
+case $command in
+	list			)	systemctl list-unit-files | less ;;
+	version			)	version ;;
+	help			)	usage ;;
+	*			)	usage ;;
+
+esac
+}
+
+if [ -z $action ] ; then
+	checkcmd
+else
+	sudo systemctl $action $command
+fi

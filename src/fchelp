@@ -1,0 +1,11 @@
+#!/bin/bash
+echo "****Quick Tips****"
+echo "The root password is 'root', you need this for Printer Administration"
+echo "The 'systemctl' command will start and stop daemons 'systemctl -h' for help"
+echo "The'hotkeys' command will show Fluxbox and other keyboard shortcuts"
+#echo "The 'startx' command will start X.org and the fluxbox desktop"
+#echo "The 'wicd-curses' command will allow you to configure your wireless/wired networks"
+echo "The 'orphan' command will remove orphaned packages on your system"
+echo "Don't forget to run 'pacman -Sy' before you use pacman or orphan"
+echo "The 'flux2hd' command will install Flux Capacity to your hard drive"
+echo ""
