@@ -447,11 +447,23 @@ error
 
 echo "Installing Grub"
 
-bootloader
-case
-
+echo ""
+echo "1 - EXT2"
+echo "2 - EXT3"
+echo "3 - EXT4"
+echo "4 - XFS"
+echo "5 - ReiserFS"
+echo -n "Enter Selection >"
+bootloader=
+read typechoice
+case $bootloader in
+	1 ) bootloader=ext2 ;;
+	2 ) bootloader=ext3 ;;
+	3 ) bootloader=ext4 ;;
+	4 ) bootloader=xfs ;;
+	5 ) bootloader=reiserfs ;;
+	* ) echo "Try Again"; selecttype ;;
 esac
-
 mkdir -p /boot/grub/locale
 cp /usr/share/locale/en\@quot/LC_MESSAGES/grub.mo $target/boot/grub/locale/en.mo
 error
