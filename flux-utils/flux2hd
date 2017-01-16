@@ -228,10 +228,10 @@ fi
 
 proceedformat()
 {
-umount $swap > /dev/null
+umount $swap > /dev/null 2>&1
 mkswap $swap
 #umount /media/tmp 
-umount $partition > /dev/null
+umount $partition > /dev/null 2>&1
 mkfs.$fstype -j -O dir_index -L "$hostnmHD" $partition 
 echo "Done [Press Enter]"; read
 }
