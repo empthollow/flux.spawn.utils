@@ -228,10 +228,11 @@ fi
 
 proceedformat()
 {
-umount $swap > /dev/null 2>&1
+umount -l $swap > /dev/null 2>&1
+swapoff $swap > /dev/null 2>&1
 mkswap $swap
-#umount /media/tmp 
-umount $partition > /dev/null 2>&1
+swapon $swap
+umount -l $partition > /dev/null 2>&1
 mkfs.$fstype -j -O dir_index -L "$hostnmHD" $partition 
 echo "Done [Press Enter]"; read
 }
@@ -265,16 +266,16 @@ mount -v -r -o loop /dev/disk/by-label/FluxCapacity /media/live > /dev/null
 fi
 test -d $target || mkdir -p $target
 mount $partition $target
-test -d /media/tmp || mkdir -p /media/tmp
-test -d /media/rtimage || mkdir -p /media/rtimage
+test -d /media/airootfs || mkdir -p /media/airootfs
+#test -d /media/rtimage || mkdir -p /media/rtimage
 error
-mount -o loop /media/live/flux/$arch/airootfs.sfs /media/tmp
-mount -o loop /media/tmp/airootfs.img /media/rtimage
+mount -o loop /media/live/flux/$arch/airootfs.sfs /media/airootfs
+#mount -o loop /media/tmp/airootfs.img /media/rtimage
 error
 echo "Preparing to Copy Files....."
-total=$(ls -lR /media/rtimage/ | wc -c)
+total=$(ls -lR /media/airootfs/ | wc -c)
 echo -n "Copying Files"
-cp -ar /media/rtimage/* $target &
+cp -ar /media/airootfs/* $target &
 dest=0
 while [ $total -gt $dest ] ; do
 	dest=$(ls -lR $target | wc -c)
@@ -286,8 +287,8 @@ else
 fi
 sleep 1
 done
-umount /media/rtimage
-umount /media/tmp
+umount /media/airootfs
+#umount /media/tmp
 umount /media/live
 
 prepchroot
@@ -450,8 +451,8 @@ echo "**************************************************************************
 echo ""
 echo "1  - Partition with cfdisk"
 echo "2  - Format Partitions"
-echo "3  - Install to HD (As on cd)"
-echo "4  - Install Fresh from Repositories"
+echo "3  - Install to HD (From Live Media)"
+echo "4  - Install Fresh from Repositories - May be Broken"
 echo "5  - Install grub"
 echo "0  - Change Variables"
 echo "00 - Exit"
