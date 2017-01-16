@@ -16,6 +16,7 @@ hostnm=FluxCapacity
 fstype=ext4
 status=Complete
 arch=$(uname -m)
+efipart=/dev/sdxx
 fi
 insver=$(pacman -Qys flux-utils-git | grep -o [0-9]*-[0-9])
 error()
@@ -54,7 +55,8 @@ groups=$groups
 hostnm=$hostnm
 status=$status
 arch=$arch
-fstype=$fstype" > /etc/conf.d/f2hdvar
+fstype=$fstype
+efipart=$efipart" > /etc/conf.d/f2hdvar
 }
 
 selecttype()
@@ -109,6 +111,7 @@ echo "5 - User's Groups: $groups"
 echo "6 - Hostname: $hostnm"
 echo "7 - Filesstem Type: $fstype"
 echo "8 - Architecture: $arch"
+echo "9 - UEFI Partition"
 echo "0 - Done"
 echo ""
 echo -n "Enter Selection >"
@@ -122,6 +125,7 @@ case $setme in
 	6	)	clear; echo -n "Enter Hostname >"; read hostnm ;;
 	7	)	clear; selecttype;;
 	8	)	clear; selectarch;;
+	9	)	clear; fdisk -l; echo -n "Enter Root Partition >"; read efipart ;;
 	0	)	writevar ; setme=0 ;;
 	*	)	echo "Try again [Press Enter]" ; read ;;
 esac
@@ -170,8 +174,7 @@ for dev in \$(ls /dev/disk/by-label/ | grep -v FluxCapacity) ; do
         echo \"\\\${if_mounted /media/\$dev}\\\${color gray}\$dev\\\${color #707070}: \\\$color\\\${fs_used /media/\$dev}/\\\${fs_size /media/\$dev} 
  \\\${color gray}Free\\\${color #707070}: \\\$color\\\${fs_free /media/\$dev} \\\${fs_bar /media/\$dev}\\\${endif}\" >> /etc/skel/.conkyrc
 done
-mount -a
-updatedb &
+mount -a updatedb &
 sed -i '8,30 d' /etc/rc.local" >> $target/etc/rc.local
 error
 sed -i s/flux/$username/g $target/etc/slim.conf
@@ -344,6 +347,16 @@ setpass
 unmount
 }
 
+grub_UEFI()
+{
+if [ "$efipart" == "/dev/sdxx" ]; then
+echo "you must change the install partition [Press Enter]"
+read
+setvalues
+fi
+
+
+}
 
 grubins()
 {
