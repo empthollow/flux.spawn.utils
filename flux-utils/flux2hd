@@ -347,29 +347,8 @@ setpass
 unmount
 }
 
-grub_UEFI()
+grub_config_file()
 {
-if [ "$efipart" == "/dev/sdxx" ]; then
-echo "you must change the install partition [Press Enter]"
-read
-setvalues
-fi
-
-mkdir -p /boot/efi
-mount -t vfat $efipart /boot/efi
-modprobe dm-mod
-grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=arch_grub --recheck --debug
-
-}
-
-grubins()
-{
-if [ "$partition" == "/dev/sdxx" ]; then
-echo "you must change the install partition [Press Enter]"
-read
-setvalues
-fi
-
 grubpart=$(echo $partition | grep -o [0-9])
 grubnum=$(echo $partition | sed s/[0-9]// | sed "s/\/dev\/sd//g")
 case $grubnum in
@@ -386,18 +365,7 @@ case $grubnum in
 	* ) echo "grubdisk not set"; error ;;
 esac
 
-
-test -d $target || mkdir $target
-[ $(cat /proc/mounts | grep $target ) ] || mount $partition $target
-error
-
-echo "Installing Grub"
-grub-install --recheck --target=i386-pc --root-directory=$target $(echo $partition | sed s/[0-9]//g)
-error
-mkdir -p /boot/grub/locale
-cp /usr/share/locale/en\@quot/LC_MESSAGES/grub.mo $target/boot/grub/locale/en.mo
-error
-
+#LINUX
 echo "#!/bin/sh
 echo \"Adding $hostnm\"
 cat << EOF
@@ -409,6 +377,7 @@ initrd /boot/initramfs-linux.img
 EOF" > $target/etc/grub.d/05_linux
 chmod +x $target/etc/grub.d/05_linux
 
+#WINDOWS
 winfullpart=$(fdisk -l | grep -i ntfs | grep -o -m 1 '/dev/sd[[:alpha:]][[:digit:]]')
 winnum=$(echo $winfullpart | sed s/[0-9]// | sed "s/\/dev\/sd//g")
 winpart=$(echo $winfullpart | grep -o [0-9])
@@ -438,6 +407,54 @@ EOF" > $target/etc/grub.d/50_windows
 if [ -e /etc/grub.d/50_windows ]; then
 	 chmod +x $target/etc/grub.d/50_windows
 fi
+
+}
+
+grub_UEFI()
+{
+if [ "$efipart" == "/dev/sdxx" ]; then
+echo "you must change the UEFI partition [Press Enter]"
+read
+setvalues
+fi
+
+mkdir -p /boot/efi
+mount -t vfat $efipart /boot/efi
+modprobe dm-mod
+grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=arch_grub --recheck --debug
+
+}
+
+grub_i386()
+{
+grub-install --recheck --target=i386-pc --root-directory=$target $(echo $partition | sed s/[0-9]//g)
+error
+
+
+}
+
+grubins()
+{
+if [ "$partition" == "/dev/sdxx" ]; then
+echo "you must change the install partition [Press Enter]"
+read
+setvalues
+fi
+
+test -d $target || mkdir $target
+[ $(cat /proc/mounts | grep $target ) ] || mount $partition $target
+error
+
+echo "Installing Grub"
+
+bootloader
+case
+
+esac
+
+mkdir -p /boot/grub/locale
+cp /usr/share/locale/en\@quot/LC_MESSAGES/grub.mo $target/boot/grub/locale/en.mo
+error
 
 prepchroot
 chroot $target grub-mkconfig -o /boot/grub/grub.cfg
