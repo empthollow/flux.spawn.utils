@@ -226,13 +226,23 @@ read
 setvalues
 fi
 
+proceedformat()
+{
+umount $swap > /dev/null
+mkswap $swap
+#umount /media/tmp 
+umount $partition > /dev/null
+mkfs.$fstype -j -O dir_index -L "$hostnmHD" $partition 
+echo "Done [Press Enter]"; read
+}
+
 echo "$partition will be formated as ext4"
 echo "$swap will be formated as swap"
 echo -n "Is this correct? [y/n/e(edit)] >"
 fp=
 read fp
 case $fp in
-	y | Y	) umount $swap ; swapoff $swap ; mkswap $swap ; umount /media/tmp ; umount $partition ; mkfs.$fstype -j -O dir_index -L "$hostnmHD" $partition ; echo "Done [Press Enter]"; read ;;
+	y | Y	) proceedformat ;;
 	n | N	) echo "NO CHANGES WERE MADE [Press Enter]" ; read ;;
 	e | E	) setvalues  ; formatparts ;; 
 	*	) echo "Try again [Press Enter]" ; read ; formatparts ;;
