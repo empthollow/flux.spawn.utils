@@ -1,0 +1,40 @@
+#!/bin/bash
+
+usage()
+{
+echo "USAGE: pack.org [operation]
+Operations
+	move	- move all src & bin packages to builds directory
+	remove	- Remove all src & bin packages & builds directory
+	rmsrc	- Remove src builds in root directory
+	rmbin	- Remove binary builds in root directory"	
+}
+
+pacmove()
+{
+	mv *.xz builds
+	mv *.gz builds
+}
+
+pacmvdir()
+{
+if [ -d builds ]; then
+	pacmove
+else
+	mkdir builds
+	pacmove
+fi
+}
+
+
+if [ -n "$(mount | grep airootfs)" ]; then
+sudo umount -l work/airootfs
+fi
+
+case $1 in
+move		)	pacmvdir ;;
+remove		)	pacmvdir; rm -r builds ;;
+rmsrc		)	rm *.gz ;;
+rmbin		)	rm *.xz ;;
+*		)	usage ;;
+esac

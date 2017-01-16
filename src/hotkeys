@@ -1,7 +1,0 @@
-#!/bin/bash
-cat ~/.fluxbox/keys | grep Mod4 | sed '1,2 d' | sed s/Mod4/'Super +'/g
-echo "Right ALT or middle mouse to paste selected text"
-echo "Right CTRL to right click"
-echo "Super + Shift + Mouse1 to move window."
-echo "[Press Enter]"
-read

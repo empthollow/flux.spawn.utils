@@ -1,3 +1,0 @@
-#!/bin/bash
-gksudo --description="Enter password to start cups daemon" systemctl start cupsd
-midori -a localhost:631

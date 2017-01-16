@@ -5,10 +5,10 @@
 
 pkgname=flux-utils
 pkgver=2.3
-pkgrel=1
+pkgrel=2
 pkgdesc="Scripts and utilities included in flux capacity"
 arch=('any')
-url=(http://fluxcapacity.99k.org)
+url=http://fluxcapacity.org
 license=('GPL2')
 depends=('samba' 'cups' 'yad' 'util-linux-ng')
 optdepends=()
@@ -26,4 +26,4 @@ cp -p ${srcdir}/daemon ${pkgdir}/usr/bin
 cp -p ${srcdir}/daemondialog ${pkgdir}/usr/bin
 cp -p ${srcdir}/smbadm ${pkgdir}/usr/bin
 }
-md5sums=('a3dbf3e28ec9cd2c82be66459b86e2ae')
+md5sums=('cf0ee4ed08287b02aad295679d24aabe')

@@ -3,3 +3,4 @@
 tar -czf $pkgname-$pkgver-$pkgrel-src.tar.gz -C flux-utils .
 sed -i '/md5sums/d' PKGBUILD
 makepkg -g >> PKGBUILD
+makepkg -cf
