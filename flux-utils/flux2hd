@@ -441,7 +441,7 @@ read
 setvalues
 fi
 
-test -d $target || mkdir $target
+test -d $target || mkdir -p $target
 [ $(cat /proc/mounts | grep $target ) ] || mount $partition $target
 error
 
