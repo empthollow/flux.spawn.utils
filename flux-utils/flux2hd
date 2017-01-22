@@ -111,7 +111,7 @@ echo "5 - User's Groups: $groups"
 echo "6 - Hostname: $hostnm"
 echo "7 - Filesstem Type: $fstype"
 echo "8 - Architecture: $arch"
-echo "9 - UEFI Partition"
+echo "9 - UEFI Partition: $efipart"
 echo "0 - Done"
 echo ""
 echo -n "Enter Selection >"
@@ -453,7 +453,7 @@ proceed_grub=
 echo -n "Do you wish to proceed? [Y/n] >"
 read proceed_grub
 
-test "$proceed_grub" != "n" || echo "GRUB WILL NOT BE INSTALLED [Press Enter]" ; read ;;
+test "$proceed_grub" != "n" || (echo "GRUB WILL NOT BE INSTALLED [Press Enter]" ; read ;)
 
 if [ "$arch" == "x86_64" ]; then
 		grub_UEFI
