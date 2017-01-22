@@ -425,11 +425,11 @@ grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=arch_
 
 }
 
-grub_i386()
+
+grub_32()
 {
 grub-install --recheck --target=i386-pc --root-directory=$target $(echo $partition | sed s/[0-9]//g)
 error
-
 
 }
 
@@ -446,31 +446,30 @@ test -d $target || mkdir $target
 error
 
 echo "Installing Grub"
+echo "This installer assumes your system is either 64 bit UEFI or 32 bit BIOS."
+echo "If this is not the case you will need to install manually, instructions "
+echo "can be found here: https://wiki.archlinux.org/index.php/GRUB"
+proceed_grub=
+echo -n "Do you wish to proceed? [Y/n] >"
+read proceed_grub
 
-echo ""
-echo "1 - EXT2"
-echo "2 - EXT3"
-echo "3 - EXT4"
-echo "4 - XFS"
-echo "5 - ReiserFS"
-echo -n "Enter Selection >"
-bootloader=
-read typechoice
-case $bootloader in
-	1 ) bootloader=ext2 ;;
-	2 ) bootloader=ext3 ;;
-	3 ) bootloader=ext4 ;;
-	4 ) bootloader=xfs ;;
-	5 ) bootloader=reiserfs ;;
-	* ) echo "Try Again"; selecttype ;;
-esac
+test "$proceed_grub" != "n" || echo "GRUB WILL NOT BE INSTALLED [Press Enter]" ; read ;;
+
+if [ "$arch" == "x86_64" ]; then
+		grub_UEFI
+	else
+		grub_32
+fi
+
 mkdir -p /boot/grub/locale
 cp /usr/share/locale/en\@quot/LC_MESSAGES/grub.mo $target/boot/grub/locale/en.mo
 error
 
+grub_config_file
 prepchroot
 chroot $target grub-mkconfig -o /boot/grub/grub.cfg
 unmount
+
 echo "press [enter] to continue ..."
 read
 }
